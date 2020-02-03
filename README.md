@@ -1,3 +1,7 @@
+Fork of **zsh-apple-touchbar** that shows recent commands in the touchbar.
+
+![preview](./Touchbar.png)
+
 # zsh-apple-touchbar
 
 Make your touchbar more powerful.
