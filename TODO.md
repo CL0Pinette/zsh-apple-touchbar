@@ -2,7 +2,6 @@
 
 ## New Features
 
-- Remove duplicates
 - Start command history buttons after a certain number of function keys.
     - Ex: User can put "git status" on first F1 and history on the rest
 
