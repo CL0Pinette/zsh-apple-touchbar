@@ -12,7 +12,7 @@ function main_view() {
     # Number of function keys to use for history (Ex: 12 -> F1 - F12)
     HISTORY_KEYS=12
     # How deep to search zhistory for unique commands
-    DEPTH=20
+    DEPTH=15
 
     latest=$(tail -n $DEPTH $ZHIST | sed "s/: [0-9]*:[0-9];//g" | cut -c 1- | tail -r)
     cmds=("${(f)latest}")
