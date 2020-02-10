@@ -7,7 +7,6 @@
 
 ## Bug Fixes
 
-- Speed up
 - make F13 - F24 functional
 - fix indexing on array so the 0th element is not "" and the tail call doesn't
     need 1 + the number of buttons to function
