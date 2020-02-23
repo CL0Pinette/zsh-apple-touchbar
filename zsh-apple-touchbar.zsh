@@ -7,19 +7,17 @@ function main_view() {
 
 	set_state 'main'
 
-    # History File
-    ZHIST=~/.zhistory
     # Number of function keys to use for history (Ex: 12 -> F1 - F12)
-    HISTORY_KEYS=12
+    history_keys=12
     # How deep to search zhistory for unique commands
-    DEPTH=15
+    depth=15
 
     # Get latest and remove duplicates/whitespace
-    latest=$(tail -n $DEPTH $ZHIST | sed "s/: [0-9]*:[0-9];//g" | awk '{$1=$1};1' | cut -c 1- | tail -r)
+    latest=$(history -$depth | sed 's/^ [0-9][0-9]*  *//g' | tail -r)
     cmds=("${(fu)latest}")
     # Create keys
-    hist_keys=($HISTORY_KEYS - 1)
-    num_keys=$(($HISTORY_KEYS>${#cmds[@]} ? ${#cmds[@]} : $HISTORY_KEYS))
+    hist_keys=($history_keys - 1)
+    num_keys=$(($history_keys>${#cmds[@]} ? ${#cmds[@]} : $history_keys))
     for (( i = 0 ; i < $num_keys ; i++ ))
     do
         create_key $i "${cmds[$i]}" "${cmds[$i]}" '-s' 2> /dev/null
