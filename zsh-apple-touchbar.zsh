@@ -13,7 +13,7 @@ function main_view() {
     depth=15
 
     # Get latest and remove duplicates/whitespace
-    latest=$(history -$depth | sed 's/^ [0-9][0-9]*  *//g' | tail -r)
+    latest=$(history -$depth | sed 's/^ [0-9][0-9]*\**  *//g' | tail -r)
     cmds=("${(fu)latest}")
     # Create keys
     hist_keys=($history_keys - 1)
