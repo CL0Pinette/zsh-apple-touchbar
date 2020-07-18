@@ -2,6 +2,8 @@ Fork of **zsh-apple-touchbar** that shows recent commands in the touchbar.
 
 ![preview](./Touchbar.png)
 
+The rest is [zsh-apple-touchbar](https://github.com/zsh-users/zsh-apple-touchbar)'s README:
+
 # zsh-apple-touchbar
 
 Make your touchbar more powerful.
