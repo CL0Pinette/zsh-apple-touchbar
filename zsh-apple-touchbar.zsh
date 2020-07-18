@@ -24,8 +24,6 @@ function main_view() {
     for (( i = 0 ; i < $num_keys ; i++ )); do
         create_key $i "${command_list[$i]}" "${command_list[$i]}" '-s' 2> /dev/null
     done
-
-    # TODO:  See TODO.md
 }
 
 zle -N main_view
