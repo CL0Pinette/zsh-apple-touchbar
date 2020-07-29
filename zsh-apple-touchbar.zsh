@@ -21,7 +21,7 @@ function history_view() {
     command_list=("${(fu)latest_commands}")
 
     # To common commands
-    create_key 1 '📕' 'commands_view'
+    create_key 1 '> ⚙️' 'configs_view'
 
     # Create keys
     num_keys_to_display=$(( $history_keys > ${#command_list[@]} ? ${#command_list[@]} : $history_keys))
@@ -39,23 +39,37 @@ function configs_view() {
 
     set_state 'configs'
 
-    create_key 1 '📖' 'history_view'
+
+    create_key 1 '> 📚' 'commands_view'
+
+    # Commands
+    create_key 2 '~/.vimrc' 'vi ~/.vimrc' '-s'
+    create_key 3 '~/.zshrc' 'vi ~/.zshrc' '-s'
+    create_key 4 'vi 🎨' 'vi ~/.vim/colors/' '-s'
+    create_key 5 'touchbar' 'vi ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh' '-s'
+}
+
+function commands_view() {
+    remove_and_unbind_keys
+
+    set_state 'commands'
+
+    create_key 1 '> 📖' 'history_view'
 
     # Commands
     create_key 2 'emacs' 'emacs &' '-s'
-    create_key 3 'vi ~/.vimrc' 'vi ~/.vimrc' '-s'
-    create_key 4 'vi ~/.zshrc' 'vi ~/.zshrc' '-s'
-    create_key 5 'vi colors' 'vi ~/.vim/colors/' '-s'
+    create_key 3 'vim' 'vi' '-s'
 }
 
-
 zle -N history_view
+zle -N configs_view
 zle -N commands_view
 
 precmd_apple_touchbar() {
 	case $state in
         command_history)    history_view ;;
 		configs)            configs_view ;;
+        commands)           commands_view ;;
 	esac
 }
 
