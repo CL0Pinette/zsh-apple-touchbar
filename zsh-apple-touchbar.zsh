@@ -2,6 +2,17 @@ source ${0:A:h}/functions.zsh
 
 set_state 'command_history'
 
+# Main menu that leads to the other views
+function menu_view() {
+    remove_and_unbind_keys
+    set_state 'menu_view'
+
+    create_key 1 '📖 history' 'history_view'
+    create_key 2 '⚙️ configs' 'configs_view'
+    create_key 3 '🖍 commands' 'commands_view'
+}
+
+# Shows command history on touchbar
 function history_view() {
 	remove_and_unbind_keys
 
@@ -20,8 +31,8 @@ function history_view() {
     latest_commands=$(history -$depth | sed 's/^ [0-9][0-9]*\**  *//g' | tail -r)
     command_list=("${(fu)latest_commands}")
 
-    # To common commands
-    create_key 1 '> ⚙️' 'configs_view'
+    # Back to menu
+    create_key 1 '👈' 'menu_view'
 
     # Create keys
     num_keys_to_display=$(( $history_keys > ${#command_list[@]} ? ${#command_list[@]} : $history_keys))
@@ -39,14 +50,15 @@ function configs_view() {
 
     set_state 'configs'
 
-
-    create_key 1 '> 📚' 'commands_view'
+    create_key 1 '👈' 'menu_view'
 
     # Commands
     create_key 2 '~/.vimrc' 'vi ~/.vimrc' '-s'
     create_key 3 '~/.zshrc' 'vi ~/.zshrc' '-s'
     create_key 4 'vi 🎨' 'vi ~/.vim/colors/' '-s'
-    create_key 5 'touchbar' 'vi ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh' '-s'
+    create_key 5 'coc-config' 'vi ~/.vim/coc-config.vim' '-s'
+    create_key 6 'touchbar' 'vi ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh' '-s'
+    create_key 7 'vim statusline' 'vi ~/.vim/statusline.vim' '-s'
 }
 
 function commands_view() {
@@ -54,19 +66,21 @@ function commands_view() {
 
     set_state 'commands'
 
-    create_key 1 '> 📖' 'history_view'
+    create_key 1 '👈' 'menu_view'
 
     # Commands
     create_key 2 'emacs' 'emacs &' '-s'
     create_key 3 'vim' 'vi' '-s'
 }
 
+zle -N menu_view
 zle -N history_view
 zle -N configs_view
 zle -N commands_view
 
 precmd_apple_touchbar() {
 	case $state in
+        menu)               menu_view ;;
         command_history)    history_view ;;
 		configs)            configs_view ;;
         commands)           commands_view ;;
