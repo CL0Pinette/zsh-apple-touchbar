@@ -86,13 +86,14 @@ function computer_view() {
 
     # Setup keys with press functionality
     create_key 1 '👈' 'menu_view'
-    create_key 4 'coc-config' 'vi ~/.vim/coc-config.vim' '-s'
 
     # Setup async updates to touchbar
     if [ -z $tempfile ]; then
         path_to_update_script="$HOME/.zsh/zsh-apple-touchbar/compStats/update_async.zsh"
-        start_async $path_to_update_script
+        start_async "$path_to_update_script"
         echo "(Started updating touchbar with PID: $!)"
+        echo "$!" | pbcopy
+        trap "open tags" SIGINT
     fi
 }
 

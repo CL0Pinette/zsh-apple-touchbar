@@ -39,9 +39,12 @@ function start_async() {
         exit 1
     fi
 
+    add-zsh-hook zshexit stop_async_if_running
+
     tempfile=$(mktemp -t touchbar)
     echo "(tempfile: $tempfile)"
-    . $1 $tempfile &
+    . "$1" "$tempfile" &
+    echo "Ran script async..."
 }
 
 function stop_async_if_running() {
