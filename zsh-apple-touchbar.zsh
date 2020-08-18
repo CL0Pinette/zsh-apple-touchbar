@@ -5,16 +5,20 @@ set_state 'command_history'
 # Main menu that leads to the other views
 function menu_view() {
     remove_and_unbind_keys
+    stop_async_if_running
+
     set_state 'menu_view'
 
     create_key 1 '📖 history' 'history_view'
     create_key 2 '⚙️ configs' 'configs_view'
     create_key 3 '🖍 commands' 'commands_view'
+    create_key 4 '🖥 stats' 'computer_view'
 }
 
 # Shows command history on touchbar
 function history_view() {
 	remove_and_unbind_keys
+    stop_async_if_running
 
 	set_state 'command_history'
 
@@ -47,6 +51,7 @@ function history_view() {
 
 function configs_view() {
     remove_and_unbind_keys
+    stop_async_if_running
 
     set_state 'configs'
 
@@ -63,6 +68,7 @@ function configs_view() {
 
 function commands_view() {
     remove_and_unbind_keys
+    stop_async_if_running
 
     set_state 'commands'
 
@@ -73,10 +79,28 @@ function commands_view() {
     create_key 3 'vim' 'vi' '-s'
 }
 
+function computer_view() {
+    remove_and_unbind_keys
+
+    set_state 'computer'
+
+    # Setup keys with press functionality
+    create_key 1 '👈' 'menu_view'
+    create_key 4 'coc-config' 'vi ~/.vim/coc-config.vim' '-s'
+
+    # Setup async updates to touchbar
+    if [ -z $tempfile ]; then
+        path_to_update_script="$HOME/.zsh/zsh-apple-touchbar/compStats/update_async.zsh"
+        start_async $path_to_update_script
+        echo "(Started updating touchbar with PID: $!)"
+    fi
+}
+
 zle -N menu_view
 zle -N history_view
 zle -N configs_view
 zle -N commands_view
+zle -N computer_view
 
 precmd_apple_touchbar() {
 	case $state in
@@ -84,6 +108,7 @@ precmd_apple_touchbar() {
         command_history)    history_view ;;
 		configs)            configs_view ;;
         commands)           commands_view ;;
+        computer)           computer_view ;;
 	esac
 }
 

@@ -31,4 +31,34 @@ function create_key() {
   fi
 }
 
+# Creates a temp file and passes it to the async script
+# Async script runs as long temp file exists.
+function start_async() {
+    if [ ! -z $tempfile ]; then
+        echo "!! Tried to start async job when tempfile is not empty ($tempfile)"
+        exit 1
+    fi
+
+    tempfile=$(mktemp -t touchbar)
+    echo "(tempfile: $tempfile)"
+    . $1 $tempfile &
+}
+
+function stop_async_if_running() {
+    if [ ! -z $tempfile ]; then
+        stop_async
+    fi
+}
+
+# Removes the temp file, stopping the async script
+function stop_async() {
+    if [ -z $tempfile ]; then
+        echo "!! Tried to stop async job when tempfile empty ($tempfile)"
+        exit 1
+    fi
+
+    rm $tempfile
+    unset tempfile
+}
+
 keys=('^[OP' '^[OQ' '^[OR' '^[OS' '^[[15~' '^[[17~' '^[[18~' '^[[19~' '^[[20~' '^[[21~' '^[[23~' '^[[24~')

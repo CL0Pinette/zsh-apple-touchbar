@@ -4,9 +4,9 @@
 # MEM X.XXG/X.XXG (SWP X.XXM/X>XXM)
 # (will omit the SWP portion if swap is 0)
 
-memory_icon="💭"
+vm_formatter_script="$(dirname $0)/vm_stat_formatter.awk"
 
-memory_info=$(vm_stat | ./vm_stat_formatter.awk)
+memory_info=$(vm_stat | $vm_formatter_script)
 memory_message="MEM $memory_info"
 
 swap_info=$(sysctl vm.swapusage | awk '$7 != "0.00M" { print $7 "/" $4 }')
