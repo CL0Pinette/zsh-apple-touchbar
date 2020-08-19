@@ -31,37 +31,39 @@ function create_key() {
   fi
 }
 
-# Creates a temp file and passes it to the async script
-# Async script runs as long temp file exists.
 function start_async() {
-    if [ ! -z $tempfile ]; then
-        echo "!! Tried to start async job when tempfile is not empty ($tempfile)"
+    if [ ! -z $async_PID ]; then
+        echo "!! Tried to start async job when async_PID is not empty ($async_PID)"
         exit 1
     fi
 
     add-zsh-hook zshexit stop_async_if_running
 
-    tempfile=$(mktemp -t touchbar)
-    echo "(tempfile: $tempfile)"
-    . "$1" "$tempfile" &
-    echo "Ran script async..."
+    # Create temp pip for exchange of PID
+    tmpdir=$(mktemp -d touchbar.XXXXXXXXX)
+    PID_pipe="$tmpdir/PID_pipe"
+    mkfifo "$PID_pipe"
+
+    ( "$1" $PID_pipe & )
+    export async_PID=$(cat $PID_pipe)
+
+    rm -r $tmpdir
 }
 
 function stop_async_if_running() {
-    if [ ! -z $tempfile ]; then
+    if [ ! -z $async_PID ]; then
         stop_async
     fi
 }
 
-# Removes the temp file, stopping the async script
 function stop_async() {
-    if [ -z $tempfile ]; then
-        echo "!! Tried to stop async job when tempfile empty ($tempfile)"
+    if [ -z $async_PID ]; then
+        echo "!! Tried to stop async job when async_PID empty"
         exit 1
     fi
 
-    rm $tempfile
-    unset tempfile
+    kill $async_PID
+    unset async_PID
 }
 
 keys=('^[OP' '^[OQ' '^[OR' '^[OS' '^[[15~' '^[[17~' '^[[18~' '^[[19~' '^[[20~' '^[[21~' '^[[23~' '^[[24~')

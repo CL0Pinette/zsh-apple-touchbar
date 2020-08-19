@@ -1,16 +1,28 @@
 #!/bin/zsh
 
 # Updates the touchbar in the background, setting touchbar elements to reflect status of computer
+# First Arguement is the name of a pipe to transfer the PID of this process
 
-tempfile=$1
+function cleanup() {
+    echo "Done"
+    exit 0
+}
+
+trap "cleanup" SIGTERM SIGHUP
 
 cur_file="$0"
 source "$(dirname $(dirname $cur_file))/functions.zsh"
 
+PID_pipe="$1"
+
 # In seconds
 update_interval=1
 
-while [ -f "$tempfile" ]; do
+# Give PID to the caller
+echo "$$" > $PID_pipe
+
+while [ true ]; do
+
     # Info for Labels
     cpu_stats=$(. "${0:A:h}/cpu_label.sh")
     mem_stats=$(. "${0:A:h}/memory_label.sh")
@@ -22,5 +34,3 @@ while [ -f "$tempfile" ]; do
     # Wait for next update
     sleep $update_interval
 done
-
-echo "Done updating async"

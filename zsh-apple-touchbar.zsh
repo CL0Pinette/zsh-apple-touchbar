@@ -80,20 +80,16 @@ function commands_view() {
 }
 
 function computer_view() {
-    remove_and_unbind_keys
-
     set_state 'computer'
 
-    # Setup keys with press functionality
-    create_key 1 '👈' 'menu_view'
+    if [ -z $async_PID ]; then # If not already running
+        remove_and_unbind_keys
 
-    # Setup async updates to touchbar
-    if [ -z $tempfile ]; then
+        # Setup keys with press functionality
+        create_key 1 '👈' 'menu_view'
+
         path_to_update_script="$HOME/.zsh/zsh-apple-touchbar/compStats/update_async.zsh"
         start_async "$path_to_update_script"
-        echo "(Started updating touchbar with PID: $!)"
-        echo "$!" | pbcopy
-        trap "open tags" SIGINT
     fi
 }
 
