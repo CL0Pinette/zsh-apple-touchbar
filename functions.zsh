@@ -47,7 +47,7 @@ function start_async() {
     ( "$1" $PID_pipe & )
     export async_PID=$(cat $PID_pipe)
 
-    rm -r $tmpdir
+    rm -rf $tmpdir
 }
 
 function stop_async_if_running() {

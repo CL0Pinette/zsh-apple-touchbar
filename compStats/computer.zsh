@@ -11,4 +11,8 @@
 # Mem usage: vm_stats + awk script
 # Swap Mem Usage:
 #
+# Energy: pmset
+#
+# Disk: iostat
+#
 # Have to update all perdiocally every n seconds

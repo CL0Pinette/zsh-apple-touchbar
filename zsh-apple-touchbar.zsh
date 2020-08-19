@@ -1,6 +1,8 @@
 source ${0:A:h}/functions.zsh
 
-set_state 'command_history'
+if [ -z $async_PID ]; then # refresh touchbar if no async command is running
+    set_state 'command_history'
+fi
 
 # Main menu that leads to the other views
 function menu_view() {
@@ -25,7 +27,7 @@ function history_view() {
     # Number of function keys to use for history (Ex: 12 -> F1 - F12)
     history_keys=12
 
-    # How deep to search zhistory for unique commands
+    # How deep to search history for unique commands
     depth=15
 
     # How many keys are reserved for other purposes than history

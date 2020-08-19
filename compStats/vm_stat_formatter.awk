@@ -43,14 +43,4 @@ END {
         usedGigs = pagesToGigs(usedPages, pageSize)
 
         printf("%.3g/%.3g\n", usedGigs, totalGigs)
-
-        #print "-----"
-        #print "Free: " pagesToGigs(freePages, pageSize)
-        #print "active: " pagesToGigs(activePages, pageSize)
-        #print "inactive: " pagesToGigs(inactivePages, pageSize)
-        #print "spec: " pagesToGigs(specPages, pageSize)
-        #print "wired: " pagesToGigs(wiredDownPages, pageSize)
-        #print "filebacked: " pagesToGigs(fileBackedPages, pageSize)
-        #print "compressed: " pagesToGigs(compressedPages, pageSize)
-        #print "------"
     }
