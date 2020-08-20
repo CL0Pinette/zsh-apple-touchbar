@@ -31,6 +31,7 @@ function create_key() {
   fi
 }
 
+# $1: script to run async
 function start_async() {
     if [ ! -z $async_PID ]; then
         echo "!! Tried to start async job when async_PID is not empty ($async_PID)"

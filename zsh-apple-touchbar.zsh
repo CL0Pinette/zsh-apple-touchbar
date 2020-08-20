@@ -14,7 +14,7 @@ function menu_view() {
     create_key 1 '📖 history' 'history_view'
     create_key 2 '⚙️ configs' 'configs_view'
     create_key 3 '🖍 commands' 'commands_view'
-    create_key 4 '🖥 stats' 'computer_view'
+    create_key 4 '🖥  stats' 'computer_view'
 }
 
 # Shows command history on touchbar
