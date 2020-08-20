@@ -19,10 +19,10 @@ function menu_view() {
 
 # Shows command history on touchbar
 function history_view() {
-	remove_and_unbind_keys
+    remove_and_unbind_keys
     stop_async_if_running
 
-	set_state 'command_history'
+    set_state 'command_history'
 
     # Number of function keys to use for history (Ex: 12 -> F1 - F12)
     history_keys=12
@@ -102,13 +102,13 @@ zle -N commands_view
 zle -N computer_view
 
 precmd_apple_touchbar() {
-	case $state in
+    case $state in
         menu)               menu_view ;;
         command_history)    history_view ;;
-		configs)            configs_view ;;
+        configs)            configs_view ;;
         commands)           commands_view ;;
         computer)           computer_view ;;
-	esac
+    esac
 }
 
 autoload -Uz add-zsh-hook

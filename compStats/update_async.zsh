@@ -38,10 +38,10 @@ while [ true ]; do
     # Update Key Labels
     create_key 2 "$battery_percentage" ''
 
-    create_key 3 "$cpu_stats ($most_cpu_process)" ''
+    create_key 3 "$cpu_stats [$most_cpu_process]" ''
     create_key 4 "$cpu_load" ''
 
-    create_key 5 "$mem_stats ($most_mem_process)" ''
+    create_key 5 "$mem_stats [$most_mem_process]" ''
 
     create_key 6 "$io_stats" ''
 
