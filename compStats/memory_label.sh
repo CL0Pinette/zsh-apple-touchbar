@@ -20,22 +20,8 @@ memory_summary="MEM $memory_proportion $swp_message"
 
 # ========= Highest Memory Process
 most_mem_process=$(ps -Arco pmem,comm | head -2 | awk 'NR == 2 { print $2 "  " $1 "%" }')
-shorten_script='
-BEGIN {
-    maxCharacters = 12
-    shortenLength = 9
-}
-{
-    processLength = length($1)
-    if (processLength > maxCharacters) {
-        print substr($1, 0, shortenLength) "... " $2
-    } else {
-        print $0
-    }
-}
-'
-most_mem_process=$(echo $most_mem_process | awk "$shorten_script" )
-
+shorten_name_script="$(dirname $0)/process_name_shortener.awk"
+most_mem_process=$(echo $most_mem_process | $shorten_name_script )
 
 
 printf "%s (%s)\n"  "$memory_summary" "$most_mem_process"
