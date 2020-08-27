@@ -22,9 +22,10 @@ function cleanup() {
 trap "cleanup" SIGTERM SIGHUP
 
 # =========== Functions
+script_dir="${0:A:h}"
 # $1: script name relative to this script's directory (with fie extension)
 function callScript() {
-    echo $(. "${0:A:h}/$1")
+    echo $(. "$script_dir/$1")
 }
 
 # ========================
