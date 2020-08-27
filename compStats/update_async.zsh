@@ -3,47 +3,75 @@
 # Updates the touchbar in the background, setting touchbar elements to reflect status of computer
 # First Arguement is the name of a pipe to transfer the PID of this process
 
+# =========== Configuration
+
+update_interval=5 # In seconds
+
+
+# =========== Handle args + source functions
+cur_file="$0"
+source "$(dirname $(dirname $cur_file))/functions.zsh"
+
+PID_pipe="$1"
+
+# =========== Setup trap behaviour
 function cleanup() {
     exit 0
 }
 
 trap "cleanup" SIGTERM SIGHUP
 
-cur_file="$0"
-source "$(dirname $(dirname $cur_file))/functions.zsh"
+# =========== Functions
+# $1: script name relative to this script's directory (with fie extension)
+function callScript() {
+    echo $(. "${0:A:h}/$1")
+}
 
-PID_pipe="$1"
+# ========================
 
-# In seconds
-update_interval=1
+
 
 # Give PID to the caller
 echo "$$" > $PID_pipe
 
+# Check if 'istats' is available for cpu temperature
+istats_available=0
+if command -v  istats &> /dev/null; then
+    istats_available=1
+fi
+
 while [ true ]; do
 
-    # Info for Labels
-    battery_percentage=$(. "${0:A:h}/battery_label.sh")
+    # Put Info for Labels into a list
+    touchbar_list=()
 
-    cpu_stats=$(. "${0:A:h}/cpu_label.sh")
-    most_cpu_process=$(. "${0:A:h}/cpu_process_label.sh")
-    cpu_load=$(. "${0:A:h}/cpu_load_label.sh")
+    battery_percentage=$(callScript "battery_label.sh")
+    touchbar_list+=("$battery_percentage")
 
-    mem_stats=$(. "${0:A:h}/memory_label.sh")
-    most_mem_process=$(. "${0:A:h}/mem_process_label.sh")
+    cpu_stats=$(callScript "cpu_label.sh")
+    touchbar_list+=("$cpu_stats")
 
-    io_stats=$(. "${0:A:h}/io_label.sh")
+    cpu_load=$(callScript "cpu_load_label.sh")
+    touchbar_list+=("$cpu_load")
+
+    mem_stats=$(callScript "memory_label.sh")
+    touchbar_list+=("$mem_stats")
+
+    io_stats=$(callScript "io_label.sh")
+    touchbar_list+=("$io_stats")
+
+    if (( $istats_available )); then
+        cpu_temp=$(callScript "cpu_temp_label.sh")
+        touchbar_list+=("$cpu_temp")
+    fi
 
 
     # Update Key Labels
-    create_key 2 "$battery_percentage" ''
-
-    create_key 3 "$cpu_stats [$most_cpu_process]" ''
-    create_key 4 "$cpu_load" ''
-
-    create_key 5 "$mem_stats [$most_mem_process]" ''
-
-    create_key 6 "$io_stats" ''
+    start_index=2
+    for info in ${touchbar_list[@]}; do
+        create_key "$start_index" "$info" ''
+        start_index=$(( $start_index + 1 ))
+    done
 
     # Wait for next update
     sleep $update_interval

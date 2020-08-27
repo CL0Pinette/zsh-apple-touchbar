@@ -42,5 +42,5 @@ END {
         totalGigs = pagesToGigs(totalPages, pageSize)
         usedGigs = pagesToGigs(usedPages, pageSize)
 
-        printf("%.3g/%.3g\n", usedGigs, totalGigs)
+        printf("%.2f/%.2f\n", usedGigs, totalGigs)
     }
