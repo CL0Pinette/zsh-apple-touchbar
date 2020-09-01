@@ -13,7 +13,7 @@ warm='😰'
 hot='🥵'
 
 # Temperature Thresholds (Celsuis)
-cold_limit=50       # ..<cold_limit
+cold_limit=40       # ..<cold_limit
 cool_limit=60       # cold_limit..cool_limit
 medium_limit=70     # cool_limit..medium_limit
 warm_limit=80       # medium_limit..warm_limit

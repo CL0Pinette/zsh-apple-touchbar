@@ -1,8 +1,19 @@
 source ${0:A:h}/functions.zsh
 
-if [ -z $async_PID ]; then # refresh touchbar if no async command is running
-    set_state 'command_history'
+autoload -Uz add-zsh-hook
+
+# If async command is running on startup, pause it while this shell instance is running
+function resume_old_async_cmd() {
+    kill -CONT $other_shell_async_PID
+}
+if [ ! -z $async_PID ]; then
+    other_shell_async_PID=$async_PID
+    unset async_PID
+    kill -STOP $other_shell_async_PID
+    add-zsh-hook zshexit resume_old_async_cmd
 fi
+
+set_state 'command_history'
 
 # Main menu that leads to the other views
 function menu_view() {
@@ -62,10 +73,11 @@ function configs_view() {
     # Commands
     create_key 2 '~/.vimrc' 'vi ~/.vimrc' '-s'
     create_key 3 '~/.zshrc' 'vi ~/.zshrc' '-s'
-    create_key 4 'vi 🎨' 'vi ~/.vim/colors/' '-s'
-    create_key 5 'coc-config' 'vi ~/.vim/coc-config.vim' '-s'
-    create_key 6 'touchbar' 'vi ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh' '-s'
-    create_key 7 'vim statusline' 'vi ~/.vim/statusline.vim' '-s'
+    create_key 4 'p10k' 'vi ~/.p10k.zsh' '-s'
+    create_key 5 'vi 🎨' 'vi ~/.vim/colors/' '-s'
+    create_key 6 'coc-config' 'vi ~/.vim/coc-config.vim' '-s'
+    create_key 7 'touchbar' 'vi ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh' '-s'
+    create_key 8 'vim statusline' 'vi ~/.vim/statusline.vim' '-s'
 }
 
 function commands_view() {
@@ -111,6 +123,5 @@ precmd_apple_touchbar() {
     esac
 }
 
-autoload -Uz add-zsh-hook
 
 add-zsh-hook precmd precmd_apple_touchbar
