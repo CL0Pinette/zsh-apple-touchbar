@@ -36,10 +36,10 @@ function history_view() {
     set_state 'command_history'
 
     # Number of function keys to use for history (Ex: 12 -> F1 - F12)
-    history_keys=12
+    history_keys=24
 
     # How deep to search history for unique commands
-    depth=15
+    depth=40
 
     # How many keys are reserved for other purposes than history
     reserved_keys=1
