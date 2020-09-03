@@ -3,7 +3,7 @@ source ${0:A:h}/functions.zsh
 autoload -Uz add-zsh-hook
 
 # If async command is running on startup, pause it while this shell instance is running
-function resume_old_async_cmd() {
+resume_old_async_cmd() {
     kill -CONT $other_shell_async_PID
 }
 if [ ! -z $async_PID ]; then
@@ -16,7 +16,7 @@ fi
 set_state 'command_history'
 
 # Main menu that leads to the other views
-function menu_view() {
+menu_view() {
     remove_and_unbind_keys
     stop_async_if_running
 
@@ -26,10 +26,11 @@ function menu_view() {
     create_key 2 '⚙️ configs' 'configs_view'
     create_key 3 '🖍 commands' 'commands_view'
     create_key 4 '🖥  stats' 'computer_view'
+    create_key 5 '⛅  weather' 'weather_view'
 }
 
 # Shows command history on touchbar
-function history_view() {
+history_view() {
     remove_and_unbind_keys
     stop_async_if_running
 
@@ -62,7 +63,7 @@ function history_view() {
 
 }
 
-function configs_view() {
+configs_view() {
     remove_and_unbind_keys
     stop_async_if_running
 
@@ -89,8 +90,9 @@ function commands_view() {
     create_key 1 '👈' 'menu_view'
 
     # Commands
-    create_key 2 'emacs' 'emacs &' '-s'
-    create_key 3 'vim' 'vi' '-s'
+    create_key 2 'pwd | pbcopy' 'pwd | pbcopy' '-s'
+    create_key 3 'emacs notetaking' 'j Classes && emacs & ' '-s'
+    create_key 4 '🌦?' 'curl v2.wttr.in/' '-s'
 }
 
 function computer_view() {
@@ -107,11 +109,26 @@ function computer_view() {
     fi
 }
 
+function weather_view() {
+    set_state 'weather'
+
+    if [ -z $async_PID ]; then # If not already running
+        remove_and_unbind_keys
+
+        # Setup keys with press functionality
+        create_key 1 '👈' 'menu_view'
+
+        path_to_update_script="$HOME/.zsh/zsh-apple-touchbar/weather/weather_async.zsh"
+        start_async "$path_to_update_script"
+    fi
+}
+
 zle -N menu_view
 zle -N history_view
 zle -N configs_view
 zle -N commands_view
 zle -N computer_view
+zle -N weather_view
 
 precmd_apple_touchbar() {
     case $state in
@@ -120,6 +137,7 @@ precmd_apple_touchbar() {
         configs)            configs_view ;;
         commands)           commands_view ;;
         computer)           computer_view ;;
+        weather)            weather_view ;;
     esac
 }
 

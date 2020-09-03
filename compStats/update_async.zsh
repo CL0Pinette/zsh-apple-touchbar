@@ -18,7 +18,6 @@ PID_pipe="$1"
 function cleanup() {
     exit 0
 }
-
 trap "cleanup" SIGTERM SIGHUP
 
 # =========== Functions
