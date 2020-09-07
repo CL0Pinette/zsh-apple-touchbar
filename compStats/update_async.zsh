@@ -6,7 +6,7 @@
 # =========== Configuration
 
 update_interval=5 # In seconds
-
+start_dynamic_keys=2 # Keys that update over time change start on this key onwards
 
 # =========== Handle args + source functions
 cur_file="$0"
@@ -15,10 +15,10 @@ source "$(dirname $(dirname $cur_file))/functions.zsh"
 PID_pipe="$1"
 
 # =========== Setup trap behaviour
-function cleanup() {
+function comp_cleanup() {
     exit 0
 }
-trap "cleanup" SIGTERM SIGHUP
+trap "comp_cleanup" SIGTERM SIGHUP
 
 # =========== Functions
 script_dir="${0:A:h}"
@@ -29,7 +29,8 @@ function callScript() {
 
 # ========================
 
-
+# Create temporary loading text
+create_key "$start_dynamic_keys" "Loading..." ''
 
 # Give PID to the caller
 echo "$$" > $PID_pipe
@@ -41,7 +42,6 @@ if command -v  istats &> /dev/null; then
 fi
 
 while [ true ]; do
-
     # Put Info for Labels into a list
     touchbar_list=()
 
@@ -67,7 +67,7 @@ while [ true ]; do
 
 
     # Update Key Labels
-    start_index=2
+    start_index=$start_dynamic_keys
     for info in ${touchbar_list[@]}; do
         create_key "$start_index" "$info" ''
         start_index=$(( $start_index + 1 ))

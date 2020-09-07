@@ -76,9 +76,10 @@ configs_view() {
     create_key 3 '~/.zshrc' 'vi ~/.zshrc' '-s'
     create_key 4 'p10k' 'vi ~/.p10k.zsh' '-s'
     create_key 5 'vi 🎨' 'vi ~/.vim/colors/' '-s'
-    create_key 6 'coc-config' 'vi ~/.vim/coc-config.vim' '-s'
-    create_key 7 'touchbar' 'vi ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh' '-s'
-    create_key 8 'vim statusline' 'vi ~/.vim/statusline.vim' '-s'
+    create_key 6 'bin_scripts' 'vi ~/bin_scripts' '-s'
+    create_key 7 'coc-config' 'vi ~/.vim/coc-config.vim' '-s'
+    create_key 8 'touchbar' 'vi ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh' '-s'
+    create_key 9 'vim statusline' 'vi ~/.vim/statusline.vim' '-s'
 }
 
 function commands_view() {
@@ -100,12 +101,10 @@ function computer_view() {
 
     if [ -z $async_PID ]; then # If not already running
         remove_and_unbind_keys
-
-        # Setup keys with press functionality
         create_key 1 '👈' 'menu_view'
 
-        path_to_update_script="$HOME/.zsh/zsh-apple-touchbar/compStats/update_async.zsh"
-        start_async "$path_to_update_script"
+        computer_script="$HOME/.zsh/zsh-apple-touchbar/compStats/update_async.zsh"
+        start_async "$computer_script"
     fi
 }
 
@@ -114,12 +113,10 @@ function weather_view() {
 
     if [ -z $async_PID ]; then # If not already running
         remove_and_unbind_keys
-
-        # Setup keys with press functionality
         create_key 1 '👈' 'menu_view'
 
-        path_to_update_script="$HOME/.zsh/zsh-apple-touchbar/weather/weather_async.zsh"
-        start_async "$path_to_update_script"
+        weather_script="$HOME/.zsh/zsh-apple-touchbar/weather/weather_async.zsh"
+        start_async "$weather_script"
     fi
 }
 
