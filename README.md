@@ -28,5 +28,11 @@ Shows chosen commands on touchbar
 
 Shows statistics about computer and periodically updates
 
+### weather
+
+![preview](images/weatherbar.png)
+
+Shows the weather, wind, and moon phase if it is night time.
+
 ---
 The original's README is [here](https://github.com/zsh-users/zsh-apple-touchbar).
