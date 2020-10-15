@@ -2,6 +2,12 @@ source ${0:A:h}/functions.zsh
 
 autoload -Uz add-zsh-hook
 
+if [ -z $async_PID ]; then
+    set_state 'weather' # TODO this doesn't work when an async script is running?
+else
+    set_state 'command_history'
+fi
+
 # If async command is running on startup, pause it while this shell instance is running
 resume_old_async_cmd() {
     kill -CONT $other_shell_async_PID
@@ -12,8 +18,6 @@ if [ ! -z $async_PID ]; then
     kill -STOP $other_shell_async_PID
     add-zsh-hook zshexit resume_old_async_cmd
 fi
-
-set_state 'command_history'
 
 # Main menu that leads to the other views
 menu_view() {
@@ -72,14 +76,16 @@ configs_view() {
     create_key 1 '👈' 'menu_view'
 
     # Commands
-    create_key 2 '~/.vimrc' 'vi ~/.vimrc' '-s'
-    create_key 3 '~/.zshrc' 'vi ~/.zshrc' '-s'
-    create_key 4 'p10k' 'vi ~/.p10k.zsh' '-s'
-    create_key 5 'vi 🎨' 'vi ~/.vim/colors/' '-s'
-    create_key 6 'bin_scripts' 'vi ~/bin_scripts' '-s'
-    create_key 7 'coc-config' 'vi ~/.vim/coc-config.vim' '-s'
-    create_key 8 'touchbar' 'vi ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh' '-s'
-    create_key 9 'vim statusline' 'vi ~/.vim/statusline.vim' '-s'
+    create_key 2  '~/.vimrc' 'vi ~/.vimrc' '-s'
+    create_key 3  '~/.zshrc' 'vi ~/.zshrc' '-s'
+    create_key 4  'p10k' 'vi ~/.p10k.zsh' '-s'
+    create_key 5  'vi 🎨' 'vi ~/.vim/colors/' '-s'
+    create_key 6  'bin_scripts' 'vi ~/bin_scripts' '-s'
+    create_key 7  'coc-config' 'vi ~/.vim/coc-config.vim' '-s'
+    create_key 8  'coc-json' 'vi ~/.vim/coc-settings.json' '-s'
+    create_key 9  'touchbar' 'vi ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh' '-s'
+    create_key 10 'ideavim' 'vi ~/.ideavimrc' '-s'
+    create_key 11 'vim statusline' 'vi ~/.vim/statusline.vim' '-s'
 }
 
 function commands_view() {
@@ -92,8 +98,9 @@ function commands_view() {
 
     # Commands
     create_key 2 'pwd | pbcopy' 'pwd | pbcopy' '-s'
-    create_key 3 'emacs notetaking' 'j Classes && emacs & ' '-s'
-    create_key 4 '🌦?' 'curl v2.wttr.in/' '-s'
+    create_key 3 'vim git revision' 'vi $(git diff --name-only master)' '-s'
+    create_key 4 'emacs notetaking' 'j Classes && emacs & ' '-s'
+    create_key 5 '🌦?' 'curl v2.wttr.in/' '-s'
 }
 
 function computer_view() {
