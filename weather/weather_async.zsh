@@ -38,9 +38,17 @@ wttr_working() {
 
 # Echoes 'day' if day, 'night' if night, and an empty string if wttr.in is down
 is_day_or_night() {
-    #echo 'in function???'
     sunset_time=$(quiet_curl wttr.in/\?format="%s")
     sunrise_time=$(quiet_curl wttr.in/\?format="%S")
+
+    # Keep pinging wttr until it gives a non empty result
+    while [ -z "$sunset_time" ] || [ -z "$sunrise_time" ]; do
+        sunset_time=$(quiet_curl wttr.in/\?format="%s")
+        sunrise_time=$(quiet_curl wttr.in/\?format="%S")
+        sleep 1
+    done
+
+    wait_until_date_works
 
     # Get times for now, sunrise and sunset
     epoch_time_now=$(date -j -f "%a %b %d %T %Z %Y" "`date`" "+%s")
@@ -59,6 +67,9 @@ is_day_or_night() {
         # Nighttime
         is_day_or_night_res='night'
     fi
+
+    unset sunset_time
+    unset sunrise_time
 }
 
 # $1: Weather it is day or night
