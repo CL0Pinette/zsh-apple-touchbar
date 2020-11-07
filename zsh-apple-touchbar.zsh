@@ -50,7 +50,7 @@ history_view() {
     reserved_keys=1
 
     # Get latest and remove duplicates/whitespace
-    latest_commands=$(history -$depth | sed 's/^ [0-9][0-9]*\**  *//g' | tail -r)
+    latest_commands=$(history -$depth | sed 's/ *[0-9][0-9]*\**  *//g' | tail -r)
     command_list=("${(fu)latest_commands}")
 
     # Back to menu

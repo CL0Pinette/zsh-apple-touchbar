@@ -48,8 +48,6 @@ is_day_or_night() {
         sleep 1
     done
 
-    wait_until_date_works
-
     # Get times for now, sunrise and sunset
     epoch_time_now=$(date -j -f "%a %b %d %T %Z %Y" "`date`" "+%s")
 
@@ -110,7 +108,6 @@ while [ true ]; do
         continue
     fi
 
-    #echo 'right before, it waits for stdin?'
     is_day_or_night
     get_weather_touchbar_info $is_day_or_night_res
     weather_str=$get_weather_touchbar_info_res
