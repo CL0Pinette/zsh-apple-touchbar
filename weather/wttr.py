@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import argparse
 import concurrent.futures
 import time
@@ -71,7 +73,15 @@ def touchbar_string():
     else:
         return ''
 
-    body = ping('http://wttr.in/?format=|%l|%C+%c|%f|%w|%h', '')
+    body = ping('http://wttr.in/?format=%l|%C+%c|%f|%w|%h', '')
+
+    # Add in emoji
+    if len(body) > 0:
+        body_parts = body.split('|')
+        body_parts[0] = '📍 ' + body_parts[0]
+        body_parts[4] = '💦 ' + body_parts[4]
+        body = '\n'.join(body_parts)
+        body = '\n' + body
 
     return prefix + body
 

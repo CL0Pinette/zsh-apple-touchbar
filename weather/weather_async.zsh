@@ -4,8 +4,10 @@
 # Changes display based on if its daylight where you are to show a moon or sun
 
 # =========== Configuration
-update_interval=900     # In seconds
+update_interval=5     # In seconds
+refresh_interval=900
 start_dynamic_keys=2    # Keys that update over time change start on this key onwards
+wttr_py="${0:A:h}/wttr.py"
 
 # =========== Handle args + source functions
 cur_file="$0"
@@ -20,78 +22,13 @@ function weather_cleanup() {
 trap "weather_cleanup" SIGTERM SIGHUP
 
 # =========== Functions
-
-# Takes normal args you'd give curl
-quiet_curl() {
-    curl -s $@ # 2> /dev/null
+function wttr_working {
+    echo "$($wttr_py --check)"
 }
 
-# Returns 1 if wttr is not working, 0 otherwise
-wttr_working() {
-    wttr_res=$(quiet_curl wttr.in/\?format="%d")
-    if [ "$wttr_res" = "" ] || [ $(echo $wttr_res | awk '{ print $1 }') = 'Unknown' ]; then
-        return 1
-    else
-        return 0
-    fi
+function get_touchbar_string {
+    echo "$($wttr_py --info)"
 }
-
-# Echoes 'day' if day, 'night' if night, and an empty string if wttr.in is down
-is_day_or_night() {
-    sunset_time=$(quiet_curl wttr.in/\?format="%s")
-    sunrise_time=$(quiet_curl wttr.in/\?format="%S")
-
-    # Keep pinging wttr until it gives a non empty result
-    while [ -z "$sunset_time" ] || [ -z "$sunrise_time" ]; do
-        sunset_time=$(quiet_curl wttr.in/\?format="%s")
-        sunrise_time=$(quiet_curl wttr.in/\?format="%S")
-        sleep 1
-    done
-
-    # Get times for now, sunrise and sunset
-    epoch_time_now=$(date -j -f "%a %b %d %T %Z %Y" "`date`" "+%s")
-
-    sunset_time=$(date | sed "s/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/$sunset_time/g")
-    epoch_sunset=$(date -j -f "%a %b %d %T %Z %Y" "$sunset_time" "+%s")
-
-    sunrise_time=$(date | sed "s/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/$sunrise_time/g")
-    epoch_sunrise=$(date -j -f "%a %b %d %T %Z %Y" "$sunrise_time" "+%s")
-
-    # If its after sunrise and before sunset, show a sun else a moon
-    if (( $epoch_time_now > $epoch_sunrise )) && (( $epoch_time_now < $epoch_sunset )); then
-        # Daytime
-        is_day_or_night_res='day'
-    else
-        # Nighttime
-        is_day_or_night_res='night'
-    fi
-
-    unset sunset_time
-    unset sunrise_time
-}
-
-# $1: Weather it is day or night
-# Echoes empty string if wttr.in is down
-get_weather_touchbar_info() {
-    case $1 in
-        'day')
-            prefix="🔅"
-            ;;
-        'night')
-            prefix=$(quiet_curl wttr.in/\?format="%m")
-            ;;
-        *)
-            echo ''
-            return 1
-            ;;
-    esac
-
-    format_str='%l|%C+%c|%f|%w|%h'
-    weather_curl_res=$(quiet_curl wttr.in\?format="$format_str")
-
-    get_weather_touchbar_info_res="$prefix|$weather_curl_res"
-}
-
 
 # ========================
 
@@ -101,44 +38,34 @@ echo "$$" > $PID_pipe
 # Create temporary loading text
 create_key "$start_dynamic_keys" "Fetching the weather..." ''
 
+cur_time=$refresh_interval
 while [ true ]; do
-    if [ ! wttr_working ]; then
-        echo 'no iternet'
-        create_key "$start_dynamic_keys" "No Internet ):" ''
-        continue
+
+    if (( $cur_time >= $refresh_interval )); then
+        cur_time=0
+
+        if [ $(wttr_working) = "unavailable" ]; then
+            create_key "$start_dynamic_keys" "No Internet ):" ''
+            continue
+        else
+            touchbar_string=$(echo "$($wttr_py --info)")
+
+            # Parse Information
+            touchbar_list=()
+
+            for section in "${(f)touchbar_string}"; do
+                touchbar_list+=("$section")
+            done
+
+            # Update Key Labels
+            start_index=$start_dynamic_keys
+            for info in ${touchbar_list[@]}; do
+                create_key "$start_index" "$info" ''
+                start_index=$(( $start_index + 1 ))
+            done
+        fi
     fi
 
-    is_day_or_night
-    get_weather_touchbar_info $is_day_or_night_res
-    weather_str=$get_weather_touchbar_info_res
-
-    # Parse Information
-    touchbar_list=()
-
-    solar_body=$(echo $weather_str | awk 'BEGIN { FS = "|" } ; { print $1 }')
-    touchbar_list+=("$solar_body")
-
-    location="📍 $(echo $weather_str | awk 'BEGIN { FS = "|" } ; { print $2 }')"
-    touchbar_list+=("$location")
-
-    weather=$(echo $weather_str | awk 'BEGIN { FS = "|" } ; { print $3 }')
-    touchbar_list+=("$weather")
-
-    temperature_feels_like=$(echo $weather_str | awk 'BEGIN { FS = "|" } ; { print $4 }')
-    touchbar_list+=("$temperature_feels_like")
-
-    wind=$(echo $weather_str | awk 'BEGIN { FS = "|" } ; { print $5 }')
-    touchbar_list+=("$wind")
-
-    humidity="💦 $(echo $weather_str | awk 'BEGIN { FS = "|" } ; { print $6 }')"
-    touchbar_list+=("$humidity")
-
-    # Update Key Labels
-    start_index=$start_dynamic_keys
-    for info in ${touchbar_list[@]}; do
-        create_key "$start_index" "$info" ''
-        start_index=$(( $start_index + 1 ))
-    done
-
     sleep $update_interval
+    cur_time=$(echo "$cur_time + $update_interval" | bc)
 done
