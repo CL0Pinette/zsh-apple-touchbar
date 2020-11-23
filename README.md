@@ -34,5 +34,7 @@ Shows statistics about computer and periodically updates
 
 Shows the weather, wind, and moon phase if it is night time.
 
+(If you use powerline 10k's instant prompt feature, this may not work as intended on shell startup)
+
 ---
 The original's README is [here](https://github.com/zsh-users/zsh-apple-touchbar).
