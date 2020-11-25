@@ -110,6 +110,7 @@ function computer_view() {
     if [ -z $async_PID ]; then # If not already running
         remove_and_unbind_keys
         create_key 1 '👈' 'menu_view'
+        create_key 2 '' 'htop' '-s'
 
         computer_script="$HOME/.zsh/zsh-apple-touchbar/compStats/update_async.zsh"
         start_async "$computer_script"
@@ -122,6 +123,7 @@ function weather_view() {
     if [ -z $async_PID ]; then # If not already running
         remove_and_unbind_keys
         create_key 1 '👈' 'menu_view'
+        create_key 2 '' 'curl v2.wttr.in/' '-s'
 
         weather_script="$HOME/.zsh/zsh-apple-touchbar/weather/weather_async.zsh"
         start_async "$weather_script"

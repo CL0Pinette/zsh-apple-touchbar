@@ -60,7 +60,13 @@ while [ true ]; do
             # Update Key Labels
             start_index=$start_dynamic_keys
             for info in ${touchbar_list[@]}; do
-                create_key "$start_index" "$info" ''
+                # Bind the first icon to v2.wttr
+                if (( $start_index == $start_dynamic_keys )); then
+                    create_key "$start_index" "$info" ''
+                else
+                    create_key "$start_index" "$info" ''
+                fi
+
                 start_index=$(( $start_index + 1 ))
             done
         fi

@@ -1,5 +1,15 @@
-Fork of **zsh-apple-touchbar** with some shell scripting to programmatically create touchbar widget in iTerm2 for different needs.
+Fork of [zsh-apple-touchbar](https://github.com/zsh-users/zsh-apple-touchbar) with some shell scripting to programmatically create dynamic touchbar widgets in iTerm2.
 
+To use, clone this repo somewhere on your machine
+```
+git clone https://github.com/zsh-users/zsh-apple-touchbar ~/.zsh/zsh-apple-touchbar
+```
+and then source it towards the top of your `~/.zshrc`
+```
+source ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh
+```
+
+# Sections
 ![preview](images/mainbar.png)
 
 Currently has:
