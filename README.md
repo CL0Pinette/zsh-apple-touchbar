@@ -9,7 +9,7 @@ and then source it towards the top of your `~/.zshrc`
 source ~/.zsh/zsh-apple-touchbar/zsh-apple-touchbar.zsh
 ```
 
-# Sections
+## Sections
 ![preview](images/mainbar.png)
 
 Currently has:
