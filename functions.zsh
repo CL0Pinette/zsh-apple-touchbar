@@ -31,14 +31,15 @@ function create_key() {
   fi
 }
 
-# $1: script to run async
+# Pass in the partial call to the asnyc script, missing the final PID_pipe arguement, which is provided by this
+# function.
 function start_async() {
-  if [ ! -z $async_PID ]; then
-    echo "!! Tried to start async job when async_PID is not empty ($async_PID)"
-    exit 1
-  fi
+    if [ ! -z $async_PID ]; then
+        echo "!! Tried to start async job when async_PID is not empty ($async_PID)"
+        exit 1
+    fi
 
-  add-zsh-hook zshexit stop_async_if_running
+    add-zsh-hook zshexit stop_async_if_running
 
     # Create temp pip for exchange of PID
     temp_base="$HOME/.zsh/zsh-apple-touchbar/temps"
@@ -46,11 +47,11 @@ function start_async() {
     PID_pipe="$tmpdir/PID_pipe"
     mkfifo "$PID_pipe"
 
-    ( "$1" $PID_pipe & )
+    ( $@ "$PID_pipe" & )
     export async_PID=$(cat $PID_pipe)
 
     rm -rf $tmpdir
-  }
+}
 
 function stop_async_if_running() {
   if [ ! -z $async_PID ]; then

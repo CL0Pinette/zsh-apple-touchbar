@@ -5,6 +5,11 @@
 # CPU temp <emoji> XX.XX%
 # ! Uses the gem istats to get the CPU temperature
 
+# If istats isn't in path/installed, exit with error code
+if [ -z $(command -v "istats") ]; then
+    exit 1
+fi
+
 # CPU temperature mappings to emoji
 cold='❄️'
 cool='🆒'
@@ -24,7 +29,7 @@ warm_limit=80       # medium_limit..warm_limit
 # Echoes 0 otherwise
 # $1: Temperature
 # $2: Upper Limit
-function temperatureLessThanLimit() {
+temperatureLessThanLimit() {
     if (( $(echo "$1 <= $2" | bc -l) )); then
         echo 1
     else
@@ -36,7 +41,7 @@ function temperatureLessThanLimit() {
 # Echoes 0 otherwise
 # $1: Temperature
 # $2: Lower Limit
-function temperatureBetweenLimits() {
+temperatureBetweenLimits() {
     if (( $(echo "$1 >= $2 || $1 < $3" | bc -l)  )); then
         echo 1
     else
@@ -49,7 +54,7 @@ function temperatureBetweenLimits() {
 # Echoes 0 otherwise
 # $1: Temperature
 # $2: Lower Limit
-function temperatureGreaterThanLimit() {
+temperatureGreaterThanLimit() {
     if (( $(echo "$1 >= $2" | bc -l) )); then
         echo 1
     else
@@ -59,18 +64,18 @@ function temperatureGreaterThanLimit() {
 
 # Get CPU temp
 cpu_temp_celsius=$(istats | awk '$1 " " $2 == "CPU temp:" { print $3 }')
-temperature=$(echo $cpu_temp_celsius | grep -Eo '[0-9]+\.[0-9]+' )
+temperature=$(echo "$cpu_temp_celsius" | grep -Eo '[0-9]+\.[0-9]+' )
 
 # Determine which icon to assign the CPU temperature
-if (( $(temperatureLessThanLimit $temperature $cold_limit) )); then
+if (( $(temperatureLessThanLimit "$temperature" $cold_limit) )); then
     cpu_temp_icon=$cold
-elif (( $(temperatureBetweenLimits $temperature $cold_limit $cool_limit) )); then
+elif (( $(temperatureBetweenLimits "$temperature" $cold_limit $cool_limit) )); then
     cpu_temp_icon=$cool
-elif (( $(temperatureBetweenLimits $temperature $cool_limit $medium_limit) )); then
+elif (( $(temperatureBetweenLimits "$temperature" $cool_limit $medium_limit) )); then
     cpu_temp_icon=$medium
-elif (( $(temperatureBetweenLimits $temperature $medium_limit $warm_limit) )); then
+elif (( $(temperatureBetweenLimits "$temperature" $medium_limit $warm_limit) )); then
     cpu_temp_icon=$warm
-elif (( $(temperatureGreaterThanLimit $temperature $warm_limit) )); then
+elif (( $(temperatureGreaterThanLimit "$temperature" $warm_limit) )); then
     cpu_temp_icon=$hot
 fi
 

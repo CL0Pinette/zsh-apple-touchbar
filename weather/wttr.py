@@ -1,9 +1,7 @@
 #!/usr/bin/python3
-
-import argparse
-import concurrent.futures
 import time
 import urllib.request as request
+import socket
 from datetime import datetime
 from urllib.error import HTTPError, URLError
 
@@ -11,32 +9,14 @@ from urllib.error import HTTPError, URLError
 Script for getting the relevent info from wttr.io and handling network failures along the way
 """
 
-# Setup Arguements
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    '--check',
-    help='Prints "available" or "unavailable" depending on whether pinging wttr.in gave a valid response',
-    action='store_true'
-)
-parser.add_argument(
-    '--time',
-    help='Prints "day", "night", "sunset", or "sunrise" depending on time of day',
-    action='store_true'
-)
-parser.add_argument(
-    '--info',
-    help='Prints "|" delimited string of weather information',
-    action='store_true'
-)
-
 # Functionality
-def check_availibility():
-    """Prints available if pinging yielded a response, and unavailable otherwise"""
+def is_availabe():
+    """Returns True if pinging yielded a response, and False otherwise"""
     status = ping('http://wttr.in/\?format=%d', '')
     if len(status) == 0 or 'Unknown Location' in status:
-        print('unavailable')
+        return False
     else:
-        print('available')
+        return True
 
 def get_time_of_day():
     """
@@ -60,7 +40,7 @@ def get_time_of_day():
         return 'night'
 
 def touchbar_string():
-    """Prints the touchbar string, with each button being delimited by '|'"""
+    """Prints the touchbar string, with each button on a new line"""
     time_of_day = get_time_of_day()
     if time_of_day == 'day':
         prefix = '🔅'
@@ -96,7 +76,7 @@ def ping(endpoint, default_value=None):
         res = request.urlopen(endpoint, timeout=timeout_len)
         content = res.read().decode(res.headers.get_content_charset())
         return content
-    except (URLError, HTTPError) as error:
+    except (URLError, HTTPError, socket.timeout) as error:
         if default_value is not None:
             return default_value
         else:
@@ -109,24 +89,16 @@ def get_sun_position_times():
     Throws HTTPError or URLError if any 1 url failed to resolve to a value.
     Indexed by the stings "sunset", "sunrise", "dawn", "dusk"
     """
-    urls_to_times = {
-        'http://wttr.in/\?format="%D"': 'dawn',
-        'http://wttr.in/\?format="%S"': 'sunrise',
-        'http://wttr.in/\?format="%s"': 'sunset',
-        'http://wttr.in/\?format="%d"': 'dusk'
+    request='http://wttr.in/\?format=%D|%S|%s|%d'
+    result = ping(request)
+
+    times = result.split('|')
+    return {
+        'dawn': datetime.strptime(times[0], '%H:%M:%S'),
+        'sunrise': datetime.strptime(times[1], '%H:%M:%S'),
+        'sunset': datetime.strptime(times[2], '%H:%M:%S'),
+        'dusk': datetime.strptime(times[3], '%H:%M:%S'),
     }
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        future_to_times = { executor.submit(ping, url): urls_to_times[url] for url in urls_to_times  }
-
-        time_to_datetimes = {}
-        for future in concurrent.futures.as_completed(future_to_times):
-            try:
-                time_result = datetime.strptime(future.result(), '"%H:%M:%S"')
-                time_to_datetimes[future_to_times[future]] = time_result
-            except Exception as exc:
-                raise exc
-
-        return time_to_datetimes
 
 def time_now():
     """Returns datetime represneting just the time right now (%H:%M:%S, no time zone accounted for)"""
@@ -135,13 +107,8 @@ def time_now():
     return now
 
 # Main
-args = parser.parse_args()
 if __name__ == '__main__':
-    if args.check:
-        check_availibility()
-    elif args.time:
-        print(get_time_of_day())
-    elif args.info:
+    if is_availabe():
         print(touchbar_string())
     else:
-        print('Invalid arguement setup; aborting')
+        print("Can't reach wttr ):")

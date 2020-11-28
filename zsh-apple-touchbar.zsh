@@ -1,3 +1,4 @@
+script_path=${0:A:h}
 source ${0:A:h}/functions.zsh
 
 autoload -Uz add-zsh-hook
@@ -112,8 +113,10 @@ function computer_view() {
         create_key 1 '👈' 'menu_view'
         create_key 2 '' 'htop' '-s'
 
-        computer_script="$HOME/.zsh/zsh-apple-touchbar/compStats/update_async.zsh"
-        start_async "$computer_script"
+        update_async="$script_path/update_async.zsh"
+        computer_script="$script_path/compStats/comp.py"
+
+        start_async "$update_async" "$computer_script" 5 5 2
     fi
 }
 
@@ -125,8 +128,10 @@ function weather_view() {
         create_key 1 '👈' 'menu_view'
         create_key 2 '' 'curl v2.wttr.in/' '-s'
 
-        weather_script="$HOME/.zsh/zsh-apple-touchbar/weather/weather_async.zsh"
-        start_async "$weather_script"
+        update_async="$script_path/update_async.zsh"
+        weather_script="$script_path/weather/wttr.py"
+
+        start_async "$update_async" "$weather_script" 1200 30 2
     fi
 }
 
