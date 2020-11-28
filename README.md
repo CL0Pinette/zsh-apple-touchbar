@@ -2,7 +2,7 @@ Fork of [zsh-apple-touchbar](https://github.com/zsh-users/zsh-apple-touchbar) wi
 
 To use, clone this repo somewhere on your machine
 ```
-git clone https://github.com/zsh-users/zsh-apple-touchbar ~/.zsh/zsh-apple-touchbar
+git clone https://github.com/pnor/zsh-apple-touchbar.git ~/.zsh/zsh-apple-touchbar
 ```
 and then source it towards the top of your `~/.zshrc`
 ```
