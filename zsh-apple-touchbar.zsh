@@ -102,7 +102,7 @@ function commands_view() {
     create_key 3 'vim git revision' 'vi $(git diff --name-only master)' '-s'
     create_key 4 'emacs notetaking' 'j Classes && emacs & ' '-s'
     create_key 5 'readme preview' 'vmd README.md' '-s'
-    create_key 6 '🌦?' 'curl v2.wttr.in/' '-s'
+    create_key 6 'gridwar' 'j GridWars && java -jar Gridwars.jar' '-s'
 }
 
 function computer_view() {

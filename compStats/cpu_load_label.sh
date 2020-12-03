@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Returns CPU load from top
+# Returns CPU 1m load from iostat
 # Formatted: CPU X.XX
 
-cpu_load=$(iostat | tail -1 | awk '{ print $7 }')
+cpu_load=$(iostat -n 0 | tail -1 | awk '{ print $4 }')
 
-printf "CPU Load: %s\n" "$cpu_load"
+printf "Load: %s\n" "$cpu_load"
 
