@@ -126,7 +126,9 @@ function weather_view() {
     if [ -z $async_PID ]; then # If not already running
         remove_and_unbind_keys
         create_key 1 '👈' 'menu_view'
-        create_key 2 '' 'curl v2.wttr.in/' '-s'
+        create_key 2 '' 'curl wttr.in' '-s'
+        create_key 3 '' 'curl v2.wttr.in/' '-s'
+        create_key 4 '' 'curl v3.wttr.in/Newark.sxl' '-s'
 
         update_async="$script_path/update_async.zsh"
         weather_script="$script_path/weather/wttr.py"
