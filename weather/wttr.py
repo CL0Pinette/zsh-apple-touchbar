@@ -13,7 +13,7 @@ Script for getting the relevent info from wttr.io and handling network failures 
 def is_availabe():
     """Returns True if pinging yielded a response, and False otherwise"""
     status = ping('http://wttr.in/\?format=%d', '')
-    if len(status) == 0 or 'Unknown Location' in status:
+    if len(status) == 0 or 'Unknown location' in status:
         return False
     else:
         return True
