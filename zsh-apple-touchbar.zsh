@@ -3,11 +3,17 @@ source ${0:A:h}/functions.zsh
 
 autoload -Uz add-zsh-hook
 
+# Initial state
 if [ -z $async_PID ]; then
-    set_state 'weather' # TODO this doesn't work when an async script is running?
+    set_state 'weather'
 else
     set_state 'command_history'
 fi
+
+# Make sure error files exist
+touch "$HOME/.zsh/zsh-apple-touchbar/async_errors.txt"
+
+
 
 # If async command is running on startup, pause it while this shell instance is running
 resume_old_async_cmd() {

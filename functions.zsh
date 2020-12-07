@@ -47,7 +47,7 @@ function start_async() {
     PID_pipe="$tmpdir/PID_pipe"
     mkfifo "$PID_pipe"
 
-    ( $@ "$PID_pipe" & )
+    ( $@ "$PID_pipe" 2>> "$HOME/.zsh/zsh-apple-touchbar/async_errors.txt" &)
     export async_PID=$(cat $PID_pipe)
 
     rm -rf $tmpdir
