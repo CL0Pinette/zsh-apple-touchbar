@@ -3,3 +3,4 @@
 t.zsh
 config.yml
 temps/*
+async_errors.txt

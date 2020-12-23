@@ -58,8 +58,12 @@ def touchbar_string():
     # Add in emoji
     if len(body) > 0:
         body_parts = body.split('|')
-        body_parts[0] = '📍 ' + body_parts[0]
-        body_parts[4] = '💦 ' + body_parts[4]
+
+        if len(body_parts) > 0:
+            body_parts[0] = '📍 ' + body_parts[0]
+        if len(body_parts) > 4:
+            body_parts[4] = '💦 ' + body_parts[4]
+
         body = '\n'.join(body_parts)
         body = '\n' + body
 

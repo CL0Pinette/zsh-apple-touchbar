@@ -36,8 +36,9 @@ menu_view() {
     create_key 1 '📖 history' 'history_view'
     create_key 2 '⚙️ configs' 'configs_view'
     create_key 3 '🖍 commands' 'commands_view'
-    create_key 4 '🖥  stats' 'computer_view'
-    create_key 5 '⛅  weather' 'weather_view'
+    create_key 4 '📂 directories' 'dir_hist_view'
+    create_key 5 '🖥  stats' 'computer_view'
+    create_key 6 '⛅  weather' 'weather_view'
 }
 
 # Shows command history on touchbar
@@ -111,6 +112,17 @@ function commands_view() {
     create_key 6 'gridwar' 'j GridWars && java -jar Gridwars.jar' '-s'
 }
 
+function dir_hist_view() {
+    remove_and_unbind_keys
+    stop_async_if_running
+
+    set_state 'dir_hist'
+
+    create_key 1 '👈' 'menu_view'
+
+    # Previous directories
+}
+
 function computer_view() {
     set_state 'computer'
 
@@ -143,11 +155,12 @@ function weather_view() {
     fi
 }
 
-zle -N menu_view
-zle -N history_view
-zle -N configs_view
 zle -N commands_view
 zle -N computer_view
+zle -N configs_view
+zle -N dir_hist_view
+zle -N history_view
+zle -N menu_view
 zle -N weather_view
 
 precmd_apple_touchbar() {
@@ -158,6 +171,7 @@ precmd_apple_touchbar() {
         commands)           commands_view ;;
         computer)           computer_view ;;
         weather)            weather_view ;;
+        dir_hist)           dir_hist_view;;
     esac
 }
 
