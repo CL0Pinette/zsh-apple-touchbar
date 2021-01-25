@@ -10,10 +10,6 @@ else
     set_state 'command_history'
 fi
 
-# Make sure error files exist
-touch "$HOME/.zsh/zsh-apple-touchbar/async_errors.txt"
-
-
 
 # If async command is running on startup, pause it while this shell instance is running
 resume_old_async_cmd() {
