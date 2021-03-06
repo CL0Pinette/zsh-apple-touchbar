@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import time
 import urllib.request as request
 import socket
 from datetime import datetime
@@ -26,7 +25,7 @@ def get_time_of_day():
     """
     try:
         times = get_sun_position_times()
-    except (HTTPError, URLError):
+    except (HTTPError, URLError, socket.timeout):
         return '?'
 
     now = time_now()
@@ -93,7 +92,7 @@ def get_sun_position_times():
     Throws HTTPError or URLError if any 1 url failed to resolve to a value.
     Indexed by the stings "sunset", "sunrise", "dawn", "dusk"
     """
-    request='http://wttr.in/\?format=%D|%S|%s|%d'
+    request = 'http://wttr.in/\?format=%D|%S|%s|%d'
     result = ping(request)
 
     times = result.split('|')
