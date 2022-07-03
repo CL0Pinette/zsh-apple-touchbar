@@ -60,11 +60,11 @@ views:
       text: status
       command: git status
     3:
-      text: add .
-      command: git add .
+      text: add
+      command_to_complete: git add 
     4:
-      text: remove all
-      command: git rm --cached -r *
+      text: commit
+      command_to_complete: git commit -m "
     5:
       text: push
       command: git push
@@ -84,6 +84,9 @@ views:
       text: fetch
       command: git fetch
     11:
+      text: remove all
+      command: git rm --cached -r *
+    12:
       text: More 👉
       view: git-extra
 

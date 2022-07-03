@@ -26,10 +26,17 @@ class Parser
   attr_reader :file_path
 
   def create_key_pattern(key, value)
-    command = value['view'] ? "#{value['view']}_view" : value['command']
+    if value['view']
+      command = "#{value['view']}_view"
+    elsif value['command']
+      command = value['command']
+    else
+      command = value['command_to_complete']
+    end
 
     "\tcreate_key #{key} '#{value['text']}' '#{command}'".tap do |code|
-      code << " '-s'" if value['command']
+      code << " '-s'" if value['command'] || value['command_to_complete']
+      code << " '-n'" if value['command']
     end if (1..12).include?(key)
   end
 

@@ -25,7 +25,11 @@ function create_key() {
   print_key "\033]1337;SetKeyLabel=F${1}=${2}\a"
 
   if [ "$4" = "-s" ]; then
-    bindkey -s $keys[$1] "$3\n"
+	if [ "$5" = "-n" ];then
+	    bindkey -s $keys[$1] "$3 \n"
+        else
+	    bindkey -s $keys[$1] "$3"
+	fi
   else
     bindkey $keys[$1] "$3"
   fi

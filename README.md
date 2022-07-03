@@ -48,3 +48,6 @@ Shows the weather, wind, and moon phase if it is night time.
 
 ---
 The original's README is [here](https://github.com/zsh-users/zsh-apple-touchbar).
+---
+
+You can start typing command and complete them on your own by passing the -n argument in the manual config setup or by using `command_to_complete` instead of `command` in the config.yml
